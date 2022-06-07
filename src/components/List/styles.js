@@ -7,6 +7,7 @@ export default makeStyles(theme => ({
     marginBottom: "30px",
     paddingRight: "30px",
     width: "150px",
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: "20px",
