@@ -15,4 +15,12 @@ export default makeStyles(theme => ({
     align: "center",
     justifyContent: "space-between",
   },
+  subtitle: {
+    margin: "40px 0",
+    display: "flex",
+    alignItems: "center",
+  },
+  chip: {
+    marginBottom: "10px",
+  },
 }))

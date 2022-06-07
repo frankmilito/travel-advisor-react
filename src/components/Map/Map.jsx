@@ -3,9 +3,9 @@ import {Paper, Typography, useMediaQuery} from "@mui/material"
 import {LocationOnOutlined} from "@mui/icons-material"
 import Rating from "@mui/lab"
 import useStyles from "./styles"
-const Map = ({setCoordinates, setBounds, coordinates}) => {
+const Map = ({setCoordinates, setBounds, coordinates, places}) => {
   const classes = useStyles()
-  const isMobile = useMediaQuery("(min-width:600px)")
+  const isDesktop = useMediaQuery("(min-width:600px)")
   return (
     <div className={classes.mapContainer}>
       <GoogleMapReact
@@ -20,7 +20,39 @@ const Map = ({setCoordinates, setBounds, coordinates}) => {
           setBounds({ne: e.marginBounds.ne, sw: e.marginBounds.sw})
         }}
         // onChildClick={""}
-      ></GoogleMapReact>
+      >
+        {places?.map((place, index) => (
+          <div
+            className={classes.markerContainer}
+            lat={Number(place.latitude)}
+            lng={Number(place.longitude)}
+            key={index}
+          >
+            {isDesktop ? (
+              <LocationOnOutlined color="primary" fontSize="large" />
+            ) : (
+              <Paper elevation={3} className={classes.paper}>
+                <Typography
+                  variant="subtitle1"
+                  gutterBottom
+                  className={classes.typography}
+                >
+                  {place.name}
+                </Typography>
+                <img
+                  className={classes.pointer}
+                  src={
+                    place.photo
+                      ? place.photo.images.large.url
+                      : "https://media-cdn.tripadvisor.com/media/photo-s/04/0e/df/1c/wakkis.jpg"
+                  }
+                  alt={place.name}
+                />
+              </Paper>
+            )}
+          </div>
+        ))}
+      </GoogleMapReact>
     </div>
   )
 }
