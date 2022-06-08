@@ -9,11 +9,14 @@ import {
   Typography,
 } from "@mui/material"
 import {LocationOnOutlined, Phone} from "@mui/icons-material"
-import Rating from "@mui/lab"
+import {Rating} from "@mui/lab"
 import useStyles from "./styles"
 
-const PlaceDetails = ({place}) => {
+const PlaceDetails = ({place, selected, refProp}) => {
+  console.log({selected, refProp})
   const classes = useStyles()
+  if (selected)
+    refProp?.current?.scrollIntoView({behavior: "smooth", block: "start"})
   return (
     <Card elevation={6}>
       <CardMedia
@@ -29,6 +32,12 @@ const PlaceDetails = ({place}) => {
         <Typography variant="h5" gutterBottom>
           {place.name}
         </Typography>
+        <Box display="flex" justifyContent="space-between">
+          <Rating size="small" value={Number(place.rating)} readOnly />
+          <Typography variant="subtitle1">
+            out of {place.num_reviews} reviews
+          </Typography>
+        </Box>
         <Box display="flex" justifyContent="space-between">
           <Typography variant="subtitle1">Price</Typography>
           <Typography variant="subtitle1">{place.price_level}</Typography>
