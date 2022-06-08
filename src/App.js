@@ -3,7 +3,7 @@ import {CssBaseline, Grid} from "@mui/material"
 import Header from "./components/Headers/Header"
 import Map from "./components/Map/Map"
 import List from "./components/List/List"
-import {getPlacesData} from "./api/index"
+import {getPlacesData, getWeatherData} from "./api/index"
 
 const App = () => {
   const [places, setPlaces] = useState([])
@@ -18,6 +18,8 @@ const App = () => {
   const [type, setType] = useState("restaurants")
   const [rating, setRating] = useState("")
 
+  const [weatherData, setWeatherData] = useState([])
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       ({coords: {latitude, longitude}}) =>
@@ -26,15 +28,20 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    setisLoading(true)
-    if (bounds) {
+    if (bounds?.ne && bounds?.sw) {
+      setisLoading(true)
+
+      getWeatherData(coordinates.lat, coordinates.lng).then(data =>
+        setWeatherData(data)
+      )
+
       getPlacesData(type, bounds.sw, bounds.ne).then(data => {
-        setPlaces(data)
+        setPlaces(data?.filter(place => place.name && place.num_reviews > 0))
         setfilteredPlaces([])
         setisLoading(false)
       })
     }
-  }, [bounds, coordinates, type])
+  }, [bounds, type])
 
   useEffect(() => {
     const filteredPlaces = places.filter(place => place.rating > rating)
@@ -43,7 +50,7 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <Header />
+      <Header setCoordinates={setCoordinates} />
       <Grid container spacing={3} style={{width: "100%"}}>
         <Grid item xs={12} md={4}>
           <List
@@ -63,6 +70,7 @@ const App = () => {
             coordinates={coordinates}
             places={filteredPlaces.length ? filteredPlaces : places}
             setChildClicked={setChildClicked}
+            weatherData={weatherData}
           />
         </Grid>
       </Grid>
